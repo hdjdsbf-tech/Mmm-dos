@@ -8,11 +8,6 @@
 
 using namespace geode::prelude;
 
-$on_mod(Disabled) {
-    // Never leave the game speed altered.
-    fp::session::restoreSpeed();
-    fp::session::stopPlayback();
-}
 
 class $modify(FPBaseLayer, GJBaseGameLayer) {
     // Observe only: the original method is always called, input is never altered.
@@ -22,10 +17,11 @@ class $modify(FPBaseLayer, GJBaseGameLayer) {
     }
 
     // Called once per physics tick (not per player), so Dual Mode doesn't double-count.
-    void processCommands(float dt) {
-        fp::session::onStep(this, dt, true);
-        GJBaseGameLayer::processCommands(dt);
-        fp::session::onStep(this, dt, false);
+    // NOTE: signature taken from the SDK compile error; half ticks are not counted as frames.
+    void processCommands(float dt, bool isHalfTick, bool isLastTick) {
+        fp::session::onStep(this, dt, true, !isHalfTick);
+        GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
+        fp::session::onStep(this, dt, false, !isHalfTick);
     }
 };
 

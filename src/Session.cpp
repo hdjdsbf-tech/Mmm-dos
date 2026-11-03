@@ -185,13 +185,13 @@ void stopPlayback() {
 
 bool isInjecting() { return g_injecting; }
 
-void onStep(GJBaseGameLayer* layer, float, bool beforeOriginal) {
+void onStep(GJBaseGameLayer* layer, float, bool beforeOriginal, bool countTick) {
     auto* pl = PlayLayer::get();
     if (!pl || static_cast<GJBaseGameLayer*>(pl) != layer) return;
 
     if (beforeOriginal) {
         if (g_armed) beginIfReady(pl);
-        if (g_playback.active() && !g_playback.paused()) {
+        if (countTick && g_playback.active() && !g_playback.paused()) {
             g_injecting = true;
             g_playback.step([&](InputEvent const& e) {
                 if (!playerAllowed(e.player2)) return;
@@ -206,7 +206,7 @@ void onStep(GJBaseGameLayer* layer, float, bool beforeOriginal) {
         return;
     }
 
-    if (g_recorder.state() == SessionState::Recording) {
+    if (countTick && g_recorder.state() == SessionState::Recording) {
         if (!g_recorder.onGameFrame()) {
             restoreSpeed();
             Notification::create("Recording error: " + g_recorder.lastError(), NotificationIcon::Error)->show();

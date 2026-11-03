@@ -46,7 +46,7 @@ std::string startPlayback(Macro macro);
 void stopPlayback();
 
 // Game events (called from hooks)
-void onStep(GJBaseGameLayer* layer, float dt, bool beforeOriginal);
+void onStep(GJBaseGameLayer* layer, float dt, bool beforeOriginal, bool countTick);
 void onButton(bool down, int button, bool isPlayer1);
 void onReset();
 void onDeath();

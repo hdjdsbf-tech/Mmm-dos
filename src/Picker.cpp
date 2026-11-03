@@ -1,35 +1,39 @@
 #include "Picker.hpp"
 
 #include <Geode/Geode.hpp>
-#include <Geode/utils/file.hpp>
 
 using namespace geode::prelude;
 
+// TEMPORARY FALLBACK: the Geode file-picker API of the SDK used in CI differs from
+// what the first version assumed (Task<Result<path>> does not compile). Until the
+// exact SDK declaration of file::pick is confirmed, import reads the newest macro
+// from <mod save dir>/imports/. This is NOT the Android file picker.
 namespace fp::picker {
-namespace {
-using PickTask = Task<Result<std::filesystem::path>>;
-EventListener<PickTask> s_listener;
-
-void run(file::PickMode mode, file::FilePickOptions options, std::function<void(std::filesystem::path)> cb) {
-    s_listener.bind([cb = std::move(cb)](PickTask::Event* event) {
-        if (auto* result = event->getValue()) {
-            if (result->isOk()) cb(std::move(result->unwrap()));
-        }
-    });
-    s_listener.setFilter(file::pick(mode, std::move(options)));
-}
-}
 
 void pickMacroToImport(std::function<void(std::filesystem::path)> onPicked) {
-    file::FilePickOptions options;
-    options.filters.push_back({"Macros (.fpm.json, .gdr.json, .gdr, .gdr2)", {"*.json", "*.gdr", "*.gdr2"}});
-    run(file::PickMode::OpenFile, std::move(options), std::move(onPicked));
+    auto dir = Mod::get()->getSaveDir() / "imports";
+    std::error_code ec;
+    std::filesystem::create_directories(dir, ec);
+    std::filesystem::path newest;
+    std::filesystem::file_time_type newestTime{};
+    for (auto const& e : std::filesystem::directory_iterator(dir, ec)) {
+        if (ec || !e.is_regular_file()) continue;
+        auto t = e.last_write_time(ec);
+        if (newest.empty() || t > newestTime) { newest = e.path(); newestTime = t; }
+    }
+    if (newest.empty()) {
+        FLAlertLayer::create("Import",
+            "File picker is not available in this build.\nPut a macro file into:\n" + dir.string(), "OK")->show();
+        return;
+    }
+    onPicked(newest);
 }
 
 void pickExportTarget(std::string const& suggestedName, std::function<void(std::filesystem::path)> onPicked) {
-    file::FilePickOptions options;
-    options.defaultPath = std::filesystem::path(suggestedName);
-    options.filters.push_back({"Frame Preview macro", {"*.json"}});
-    run(file::PickMode::SaveFile, std::move(options), std::move(onPicked));
+    auto dir = Mod::get()->getSaveDir() / "exports";
+    std::error_code ec;
+    std::filesystem::create_directories(dir, ec);
+    onPicked(dir / suggestedName);
 }
+
 }

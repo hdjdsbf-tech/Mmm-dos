@@ -10,7 +10,7 @@
 
 ## Что реализовано
 - Запись `.fpm.json`: Idle/Armed/Recording/Interrupted/Completed, checkpoint каждые 120 тиков, атомарная запись, partial/complete.
-- Импорт/воспроизведение: `.fpm.json`, `.gdr.json` (через Android file picker Geode).
+- Импорт/воспроизведение: `.fpm.json`, `.gdr.json` (через временная замена: папка imports (Android file picker пока не работает с этим SDK)).
 - Playback P1/P2, пауза/стоп/рестарт, отпускание кнопок при выходе/смерти, предупреждение о другом уровне.
 - Speedhack (CCScheduler time scale) только во время записи, 0.10–3.00, восстановление на всех путях выхода.
 - Анализ: интервалы, удержания, peak/avg inputs/s, гистограмма, фоновый поток с прогрессом и отменой; маркеры на таймлайне уровня.
