@@ -1,0 +1,90 @@
+{
+  "geode": "5.11.2",
+  "gd": {
+    "android": "2.208"
+  },
+  "id": "local.frame-preview",
+  "name": "Frame Preview",
+  "version": "v0.2.0",
+  "developer": "Local",
+  "description": "Macro recording, playback and frame-window analysis tools for offline level preview and testing.",
+  "repository": "",
+  "tags": [
+    "gameplay",
+    "utility",
+    "offline",
+    "interface"
+  ],
+  "settings": {
+    "tps": {
+      "name": "TPS",
+      "description": "Physics ticks per second stored in recorded macros (GD default is 240).",
+      "type": "int",
+      "default": 240,
+      "min": 30,
+      "max": 1000
+    },
+    "speedhack-enabled": {
+      "name": "Slow-down while recording",
+      "description": "Apply the speed multiplier ONLY while a recording is active.",
+      "type": "bool",
+      "default": false
+    },
+    "speed-multiplier": {
+      "name": "Speed multiplier",
+      "description": "0.10 - 3.00. Restored automatically on stop, pause, death, quit and completion.",
+      "type": "float",
+      "default": 0.5,
+      "min": 0.1,
+      "max": 3.0,
+      "control": {
+        "slider": true,
+        "input": true,
+        "arrows": true,
+        "arrow-step": 0.05
+      }
+    },
+    "show-hud": {
+      "name": "Show HUD",
+      "type": "bool",
+      "default": true
+    },
+    "show-markers": {
+      "name": "Show timeline markers",
+      "type": "bool",
+      "default": true
+    },
+    "marker-color": {
+      "name": "Marker color",
+      "type": "rgb",
+      "default": [
+        255,
+        140,
+        0
+      ]
+    },
+    "marker-size": {
+      "name": "Marker size",
+      "type": "float",
+      "default": 2.0,
+      "min": 1.0,
+      "max": 6.0
+    },
+    "confirmations": {
+      "name": "Confirmation dialogs",
+      "type": "bool",
+      "default": true
+    },
+    "player-filter": {
+      "name": "Player filter",
+      "description": "Which player's inputs are recorded and played back.",
+      "type": "string",
+      "default": "Both",
+      "one-of": [
+        "Both",
+        "Player 1",
+        "Player 2"
+      ]
+    }
+  }
+}
