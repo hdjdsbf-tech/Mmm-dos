@@ -21,3 +21,10 @@ jobs:
         with:
           sdk: 5.11.2
           target: Android64
+
+      - name: Upload .geode
+        uses: actions/upload-artifact@v4
+        with:
+          name: frame-preview-geode
+          path: "**/*.geode"
+          if-no-files-found: error
