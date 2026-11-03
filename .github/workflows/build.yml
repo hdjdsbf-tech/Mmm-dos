@@ -1,0 +1,23 @@
+name: Build Geode mod
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-android64:
+    name: Build Android ARM64
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Build with Geode SDK
+        uses: geode-sdk/build-geode-mod@main
+        with:
+          sdk: latest
+          target: Android64
